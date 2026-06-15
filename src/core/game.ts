@@ -7,6 +7,7 @@ import type {
   GameState,
   Hero,
   KeyColor,
+  ShopOption,
 } from './types'
 import { FLOOR_ID, getBlock } from './blocks'
 import { MONSTERS } from '../data/monsters'
@@ -308,12 +309,31 @@ export function tryMove(state: GameState, direction: Direction): ActionResult {
     }
 
     case 'shop': {
-      events.push({ type: 'message', text: '商店（开发中）' })
-      return { state: nextState, events }
+      // 不走上去，打开商店
+      return { state: nextState, events: [{ type: 'shop' }] }
     }
 
     default:
       return { state: nextState, events: [{ type: 'blocked' }] }
+  }
+}
+
+/** 在商店购买一项（金币足够才成功） */
+export function buyFromShop(state: GameState, option: ShopOption): ActionResult {
+  const hero = state.hero
+  if (hero.gold < option.cost) {
+    return { state, events: [{ type: 'message', text: '金币不足' }] }
+  }
+  const h: Hero = { ...hero, keys: { ...hero.keys } }
+  h.gold -= option.cost
+  const e = option.effect
+  if (e.hp) h.hp += e.hp
+  if (e.atk) h.atk += e.atk
+  if (e.def) h.def += e.def
+  if (e.mdef) h.mdef += e.mdef
+  return {
+    state: { ...state, hero: h },
+    events: [{ type: 'message', text: `购买 ${option.label}（-${option.cost} 金币）` }],
   }
 }
 

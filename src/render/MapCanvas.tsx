@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { useGameStore } from '../store/gameStore'
 import { getBlock } from '../core/blocks'
+import { MONSTERS } from '../data/monsters'
+import { previewDamage } from '../core/combat'
 import type { GameState, Hero } from '../core/types'
 
 export const TILE = 36
@@ -107,6 +109,33 @@ function drawHero(ctx: CanvasRenderingContext2D, hero: Hero) {
   ctx.fill()
 }
 
+/** 在怪物格底部画伤害预测：安全=浅色，致命=红色，打不过=✗ */
+function drawDamagePreview(ctx: CanvasRenderingContext2D, x: number, y: number, hero: Hero, monsterId: string) {
+  const monster = MONSTERS[monsterId]
+  if (!monster) return
+  const p = previewDamage(hero, monster)
+  const px = x * TILE
+  const py = y * TILE
+  let text: string
+  let color: string
+  if (!p.canWin) {
+    text = '✗'
+    color = '#ff4d4d'
+  } else {
+    text = p.damage >= 10000 ? `${Math.round(p.damage / 1000)}k` : String(p.damage)
+    color = p.lethal ? '#ff4d4d' : p.damage === 0 ? '#7CFC00' : '#ffe08a'
+  }
+  ctx.font = `bold ${Math.floor(TILE * 0.3)}px "Microsoft YaHei", monospace`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'bottom'
+  // 描边提升可读性
+  ctx.lineWidth = 3
+  ctx.strokeStyle = 'rgba(0,0,0,0.85)'
+  ctx.strokeText(text, px + TILE / 2, py + TILE - 1)
+  ctx.fillStyle = color
+  ctx.fillText(text, px + TILE / 2, py + TILE - 1)
+}
+
 function drawMap(ctx: CanvasRenderingContext2D, game: GameState) {
   const map = game.maps[game.hero.floor]
   ctx.clearRect(0, 0, map.width * TILE, map.height * TILE)
@@ -125,6 +154,10 @@ function drawMap(ctx: CanvasRenderingContext2D, game: GameState) {
           break
         case 'stairDown':
           drawStair(ctx, x, y, false)
+          break
+        case 'monster':
+          drawGlyphBlock(ctx, x, y, block.color ?? '#888', block.glyph)
+          drawDamagePreview(ctx, x, y, game.hero, block.monsterId as string)
           break
         default:
           drawGlyphBlock(ctx, x, y, block.color ?? '#888', block.glyph)

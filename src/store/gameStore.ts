@@ -1,8 +1,9 @@
 import { create } from 'zustand'
-import type { Direction, GameEvent, GameState, KeyColor } from '../core/types'
-import { initGame, tryMove } from '../core/game'
+import type { Direction, GameEvent, GameState, KeyColor, ShopOption } from '../core/types'
+import { buyFromShop, initGame, tryMove } from '../core/game'
 import { findPath } from '../core/pathfind'
 import { FLOORS } from '../data/floors'
+import { GOLD_SHOP } from '../data/shops'
 import { AUTO_SLOT, autoSave, loadGame, saveGame } from '../core/save'
 
 export interface LogEntry {
@@ -23,12 +24,15 @@ interface GameStore {
   screen: Screen
   logs: LogEntry[]
   dialog: DialogState | null
+  shop: ShopOption[] | null // 当前打开的商店
   moving: boolean // 正在自动寻路
 
   newGame: () => void
   move: (dir: Direction) => void
   moveTo: (x: number, y: number) => void
   closeDialog: () => void
+  buy: (optionId: string) => void
+  closeShop: () => void
   save: (slot: string) => void
   load: (slot: string) => boolean
   hasAutoSave: () => boolean
@@ -91,6 +95,9 @@ export const useGameStore = create<GameStore>((set, get) => {
     if (dialog && dialog.type === 'dialog') {
       set({ dialog: { speaker: dialog.speaker, lines: dialog.lines } })
     }
+    if (events.some((e) => e.type === 'shop')) {
+      set({ shop: GOLD_SHOP })
+    }
   }
 
   return {
@@ -98,18 +105,19 @@ export const useGameStore = create<GameStore>((set, get) => {
     screen: 'title',
     logs: [],
     dialog: null,
+    shop: null,
     moving: false,
 
     newGame: () => {
       logId = 0
       const game = initGame(FLOORS)
-      set({ game, screen: 'playing', logs: [], dialog: null, moving: false })
+      set({ game, screen: 'playing', logs: [], dialog: null, shop: null, moving: false })
       autoSave(game, Date.now())
     },
 
     move: (dir) => {
       const g = get().game
-      if (!g || g.status !== 'playing' || get().dialog) return
+      if (!g || g.status !== 'playing' || get().dialog || get().shop) return
       const { state, events } = tryMove(g, dir)
       set({ game: state })
       applyEvents(events)
@@ -121,7 +129,7 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     moveTo: (x, y) => {
       const g = get().game
-      if (!g || g.status !== 'playing' || get().dialog || get().moving) return
+      if (!g || g.status !== 'playing' || get().dialog || get().shop || get().moving) return
       const map = g.maps[g.hero.floor]
       const path = findPath(map, { x: g.hero.x, y: g.hero.y }, { x, y })
       if (!path || path.length === 0) return
@@ -154,6 +162,20 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     closeDialog: () => set({ dialog: null }),
 
+    buy: (optionId) => {
+      const g = get().game
+      const shop = get().shop
+      if (!g || !shop) return
+      const option = shop.find((o) => o.id === optionId)
+      if (!option) return
+      const { state, events } = buyFromShop(g, option)
+      set({ game: state })
+      pushLogs(events)
+      autoSave(state, Date.now())
+    },
+
+    closeShop: () => set({ shop: null }),
+
     save: (slot) => {
       const g = get().game
       if (!g) return
@@ -165,7 +187,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       const state = loadGame(slot)
       if (!state) return false
       logId = 0
-      set({ game: state, screen: 'playing', logs: [], dialog: null, moving: false })
+      set({ game: state, screen: 'playing', logs: [], dialog: null, shop: null, moving: false })
       return true
     },
 
@@ -175,6 +197,11 @@ export const useGameStore = create<GameStore>((set, get) => {
       get().load(AUTO_SLOT)
     },
 
-    toTitle: () => set({ screen: 'title', dialog: null, moving: false }),
+    toTitle: () => set({ screen: 'title', dialog: null, shop: null, moving: false }),
   }
 })
+
+// 开发调试钩子（仅 dev）：浏览器控制台可用 window.__mota 驱动游戏
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  ;(window as unknown as { __mota: typeof useGameStore }).__mota = useGameStore
+}

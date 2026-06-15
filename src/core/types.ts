@@ -163,7 +163,16 @@ export type GameEvent =
   | { type: 'levelUp'; level: number }
   | { type: 'gameover'; reason: string }
   | { type: 'victory' }
+  | { type: 'shop' }
   | { type: 'sound'; name: string }
+
+/** 商店选项 */
+export interface ShopOption {
+  id: string
+  label: string
+  cost: number
+  effect: Partial<{ hp: number; atk: number; def: number; mdef: number }>
+}
 
 /** 引擎动作返回值 */
 export interface ActionResult {

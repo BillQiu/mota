@@ -251,6 +251,64 @@
   justify-content: center;
 }
 
+/* ---------- 商店 ---------- */
+.shop-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease;
+}
+.shop-box {
+  width: 360px;
+  max-width: 90vw;
+  background: var(--mota-panel);
+  border: 3px solid #16a085;
+  border-radius: 12px;
+  padding: 22px 24px;
+  text-align: center;
+}
+.shop-title {
+  font-size: 24px;
+  color: #2ee6b6;
+  margin-bottom: 10px;
+}
+.shop-greeting {
+  color: #c8c8dc;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.shop-gold {
+  color: var(--mota-gold);
+  margin-bottom: 16px;
+}
+.shop-gold b {
+  font-size: 20px;
+}
+.shop-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.shop-opt {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  font-size: 16px;
+}
+.shop-cost {
+  color: var(--mota-gold);
+  font-size: 14px;
+}
+.shop-close {
+  width: 100%;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

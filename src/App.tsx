@@ -6,6 +6,7 @@ import { MessageLog } from './ui/MessageLog'
 import { DialogBox } from './ui/DialogBox'
 import { TitleScreen } from './ui/TitleScreen'
 import { ResultOverlay } from './ui/ResultOverlay'
+import { ShopModal } from './ui/ShopModal'
 import type { Direction } from './core/types'
 import './App.css'
 
@@ -71,6 +72,7 @@ export default function App() {
         </div>
       </div>
       <DialogBox />
+      <ShopModal />
       <ResultOverlay />
     </div>
   )
