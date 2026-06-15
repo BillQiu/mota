@@ -18,6 +18,7 @@ export interface DialogState {
 }
 
 type Screen = 'title' | 'playing'
+export type Panel = 'none' | 'manual' | 'saves'
 
 interface GameStore {
   game: GameState | null
@@ -25,6 +26,7 @@ interface GameStore {
   logs: LogEntry[]
   dialog: DialogState | null
   shop: ShopOption[] | null // 当前打开的商店
+  panel: Panel // 当前打开的面板（怪物手册/存读档）
   moving: boolean // 正在自动寻路
 
   newGame: () => void
@@ -33,6 +35,8 @@ interface GameStore {
   closeDialog: () => void
   buy: (optionId: string) => void
   closeShop: () => void
+  openPanel: (p: Panel) => void
+  closePanel: () => void
   save: (slot: string) => void
   load: (slot: string) => boolean
   hasAutoSave: () => boolean
@@ -106,18 +110,19 @@ export const useGameStore = create<GameStore>((set, get) => {
     logs: [],
     dialog: null,
     shop: null,
+    panel: 'none',
     moving: false,
 
     newGame: () => {
       logId = 0
       const game = initGame(FLOORS)
-      set({ game, screen: 'playing', logs: [], dialog: null, shop: null, moving: false })
+      set({ game, screen: 'playing', logs: [], dialog: null, shop: null, panel: 'none', moving: false })
       autoSave(game, Date.now())
     },
 
     move: (dir) => {
       const g = get().game
-      if (!g || g.status !== 'playing' || get().dialog || get().shop) return
+      if (!g || g.status !== 'playing' || get().dialog || get().shop || get().panel !== 'none') return
       const { state, events } = tryMove(g, dir)
       set({ game: state })
       applyEvents(events)
@@ -129,7 +134,8 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     moveTo: (x, y) => {
       const g = get().game
-      if (!g || g.status !== 'playing' || get().dialog || get().shop || get().moving) return
+      if (!g || g.status !== 'playing' || get().dialog || get().shop || get().panel !== 'none' || get().moving)
+        return
       const map = g.maps[g.hero.floor]
       const path = findPath(map, { x: g.hero.x, y: g.hero.y }, { x, y })
       if (!path || path.length === 0) return
@@ -176,6 +182,9 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     closeShop: () => set({ shop: null }),
 
+    openPanel: (p) => set({ panel: p }),
+    closePanel: () => set({ panel: 'none' }),
+
     save: (slot) => {
       const g = get().game
       if (!g) return
@@ -187,7 +196,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       const state = loadGame(slot)
       if (!state) return false
       logId = 0
-      set({ game: state, screen: 'playing', logs: [], dialog: null, shop: null, moving: false })
+      set({ game: state, screen: 'playing', logs: [], dialog: null, shop: null, panel: 'none', moving: false })
       return true
     },
 
@@ -197,7 +206,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       get().load(AUTO_SLOT)
     },
 
-    toTitle: () => set({ screen: 'title', dialog: null, shop: null, moving: false }),
+    toTitle: () => set({ screen: 'title', dialog: null, shop: null, panel: 'none', moving: false }),
   }
 })
 

@@ -309,6 +309,131 @@
   width: 100%;
 }
 
+/* ---------- 通用面板（手册 / 存读档）---------- */
+.panel-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease;
+}
+.panel-box {
+  width: 560px;
+  max-width: 92vw;
+  max-height: 86vh;
+  overflow-y: auto;
+  background: var(--mota-panel);
+  border: 3px solid var(--mota-border);
+  border-radius: 12px;
+  padding: 22px 24px;
+}
+.panel-title {
+  font-size: 22px;
+  color: var(--mota-gold);
+  text-align: center;
+  margin-bottom: 18px;
+}
+.panel-empty {
+  text-align: center;
+  color: #9a9ab5;
+  padding: 24px;
+}
+.panel-close {
+  display: block;
+  margin: 18px auto 0;
+}
+
+/* 怪物手册表格 */
+.manual-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.manual-table th,
+.manual-table td {
+  padding: 8px 6px;
+  text-align: center;
+  border-bottom: 1px solid #44445a;
+}
+.manual-table th {
+  color: #9a9ab5;
+  font-weight: normal;
+}
+.manual-table td:first-child {
+  text-align: left;
+  white-space: nowrap;
+}
+.manual-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  color: #1a1a1a;
+  font-weight: bold;
+  font-size: 12px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.c-gold {
+  color: var(--mota-gold);
+}
+.c-exp {
+  color: var(--mota-exp);
+}
+.dmg-ok {
+  color: #ffe08a;
+}
+.dmg-lethal {
+  color: #ff5a5a;
+  font-weight: bold;
+}
+.dmg-no {
+  color: #ff5a5a;
+}
+
+/* 存读档列表 */
+.save-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.save-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1c1c28;
+  border: 1px solid #3a3a4f;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.save-slot {
+  font-size: 15px;
+  font-weight: bold;
+  color: #d8d8ec;
+}
+.save-meta {
+  font-size: 12px;
+  color: #9a9ab5;
+  margin-top: 3px;
+}
+.save-meta.empty {
+  color: #5a5a75;
+}
+.save-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn.small.danger {
+  border-color: #a04040;
+}
+.btn.small.danger:hover:not(:disabled) {
+  background: #5a2a2a;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

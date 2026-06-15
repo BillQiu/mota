@@ -7,6 +7,8 @@ import { DialogBox } from './ui/DialogBox'
 import { TitleScreen } from './ui/TitleScreen'
 import { ResultOverlay } from './ui/ResultOverlay'
 import { ShopModal } from './ui/ShopModal'
+import { MonsterManual } from './ui/MonsterManual'
+import { SaveLoadScreen } from './ui/SaveLoadScreen'
 import type { Direction } from './core/types'
 import './App.css'
 
@@ -28,12 +30,18 @@ const KEY_DIR: Record<string, Direction> = {
 export default function App() {
   const screen = useGameStore((s) => s.screen)
   const move = useGameStore((s) => s.move)
-  const save = useGameStore((s) => s.save)
   const toTitle = useGameStore((s) => s.toTitle)
+  const openPanel = useGameStore((s) => s.openPanel)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (screen !== 'playing') return
+      const s = useGameStore.getState()
+      const busy = s.dialog || s.shop || s.panel !== 'none'
+      if ((e.key === 'x' || e.key === 'X') && !busy) {
+        openPanel('manual')
+        return
+      }
       const dir = KEY_DIR[e.key]
       if (dir) {
         e.preventDefault()
@@ -42,7 +50,7 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [screen, move])
+  }, [screen, move, openPanel])
 
   if (screen === 'title') {
     return (
@@ -62,8 +70,11 @@ export default function App() {
           <Hud />
           <MessageLog />
           <div className="toolbar">
-            <button className="btn small" onClick={() => save('手动存档')}>
-              保存
+            <button className="btn small" onClick={() => openPanel('manual')}>
+              手册
+            </button>
+            <button className="btn small" onClick={() => openPanel('saves')}>
+              存读档
             </button>
             <button className="btn small" onClick={toTitle}>
               标题
@@ -73,6 +84,8 @@ export default function App() {
       </div>
       <DialogBox />
       <ShopModal />
+      <MonsterManual />
+      <SaveLoadScreen />
       <ResultOverlay />
     </div>
   )
