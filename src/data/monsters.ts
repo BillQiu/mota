@@ -22,7 +22,7 @@ export const MONSTERS: Record<string, MonsterDef> = {
   goblinKing: { id: 'goblinKing', name: '兽人王', hp: 550, atk: 160, def: 70, gold: 40, exp: 45, color: '#6e5226', glyph: '兽' },
   vampire: { id: 'vampire', name: '吸血鬼', hp: 700, atk: 200, def: 90, gold: 55, exp: 60, color: '#7b241c', glyph: '吸' },
   knight: { id: 'knight', name: '黑暗骑士', hp: 900, atk: 250, def: 120, gold: 70, exp: 80, color: '#34495e', glyph: '骑' },
-  demonKing: { id: 'demonKing', name: '魔王', hp: 4000, atk: 350, def: 130, gold: 0, exp: 0, color: '#900c3f', glyph: '魔' },
+  demonKing: { id: 'demonKing', name: '魔王', hp: 20000, atk: 550, def: 250, gold: 0, exp: 0, color: '#900c3f', glyph: '魔' },
 }
 
 export function getMonster(id: string): MonsterDef | undefined {

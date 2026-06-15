@@ -2,28 +2,23 @@ import type { FloorData } from '../../core/types'
 import { buildFloor } from './build'
 
 // ============================================================
-// 楼层数据（12 层完整塔，统一模板 + 权力曲线）
+// 楼层数据（24 层完整塔，按楼层数缩放怪物/战利品的生成器）
 // 内容槽位（每层）：
-//   row4: a c d e（顶排，c 为中心留空保持主路）
+//   row4: a m c d e（c 中心留空保持主路）
 //   row6: f [钥匙] g
-//   row8: h [special] i（h/i 两侧，special 居中，可为道具或商店20）
-// 门(D) 与 钥匙 颜色循环 Y/B/R；顶层为公主 P + 魔王 M
+//   row8: h [special] i（special 居中：商店或道具）
+// 门(D)/钥匙颜色循环 Y/B/R；顶层为公主 P + 魔王 M
 // ============================================================
 
-type SlotMap = Partial<Record<'a' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'm' | 's', number | string>>
+type Slot = 'a' | 'm' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 's'
+type SlotMap = Partial<Record<Slot, number | string>>
 
 function std(
   floor: number,
   name: string,
-  cfg: {
-    door: 'Y' | 'B' | 'R'
-    key: 'y' | 'b' | 'r'
-    hasDown: boolean
-    start: boolean
-    content: SlotMap
-  },
+  cfg: { door: 'Y' | 'B' | 'R'; key: 'y' | 'b' | 'r'; hasDown: boolean; start: boolean; content: SlotMap },
 ): FloorData {
-  const slots = ['a', 'm', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 's'] as const
+  const slots: Slot[] = ['a', 'm', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 's']
   const extra: Record<string, number | string> = {}
   for (const k of slots) extra[k] = cfg.content[k] ?? 0
   const rows = [
@@ -44,86 +39,79 @@ function std(
   return buildFloor(floor, name, rows, extra)
 }
 
-const floors: FloorData[] = [
-  std(1, '第 1 层', {
-    door: 'Y',
-    key: 'y',
-    hasDown: false,
-    start: true,
-    content: { a: 'greenSlime', m: 'redGem', d: 'redGem', e: 'greenSlime', f: 'redPotion' },
-  }),
-  std(2, '第 2 层', {
-    door: 'B',
-    key: 'b',
-    hasDown: true,
-    start: false,
-    content: { a: 'redSlime', m: 'blackSlime', d: 'bat', e: 'redSlime', f: 'blueGem', g: 'redPotion', s: 20, i: 'redGem' },
-  }),
-  std(3, '第 3 层', {
-    door: 'R',
-    key: 'r',
-    hasDown: true,
-    start: false,
-    content: { a: 'bat', m: 'skeleton', d: 'bigBat', e: 'bat', f: 'sword1', g: 'shield1', h: 'redPotion', s: 'redGem', i: 'redGem' },
-  }),
-  std(4, '第 4 层', {
-    door: 'Y',
-    key: 'y',
-    hasDown: true,
-    start: false,
-    content: { a: 'bigBat', m: 'zombie', d: 'skeleton', e: 'bat', f: 'redGem', g: 'redGem', h: 'bluePotion', s: 'blueGem', i: 'redGem' },
-  }),
-  std(5, '第 5 层', {
-    door: 'B',
-    key: 'b',
-    hasDown: true,
-    start: false,
-    content: { a: 'redBat', m: 'skeletonCaptain', d: 'redBat', e: 'skeleton', f: 'sword2', g: 'blueGem', h: 'blueGem', s: 20, i: 'redPotion' },
-  }),
-  std(6, '第 6 层', {
-    door: 'R',
-    key: 'r',
-    hasDown: true,
-    start: false,
-    content: { a: 'zombie', m: 'slimeMan', d: 'redBat', e: 'zombie', f: 'redGem', g: 'redGem', h: 'redGem', s: 'yellowPotion', i: 'shield1' },
-  }),
-  std(7, '第 7 层', {
-    door: 'Y',
-    key: 'y',
-    hasDown: true,
-    start: false,
-    content: { a: 'bluePriest', m: 'goblin', d: 'bluePriest', e: 'bat', f: 'shield2', g: 'redGem', h: 'redGem', s: 'redPotion', i: 'redPotion' },
-  }),
-  std(8, '第 8 层', {
-    door: 'B',
-    key: 'b',
-    hasDown: true,
-    start: false,
-    content: { a: 'zombieKing', m: 'redPriest', d: 'zombie', e: 'redBat', f: 'sword2', g: 'blueGem', h: 'blueGem', s: 20, i: 'bluePotion' },
-  }),
-  std(9, '第 9 层', {
-    door: 'R',
-    key: 'r',
-    hasDown: true,
-    start: false,
-    content: { a: 'goblin', m: 'goblinKing', d: 'bluePriest', e: 'zombie', f: 'redGem', g: 'redGem', h: 'redGem', s: 'shield2', i: 'greenPotion' },
-  }),
-  std(10, '第 10 层', {
-    door: 'Y',
-    key: 'y',
-    hasDown: true,
-    start: false,
-    content: { a: 'vampire', m: 'knight', d: 'goblin', e: 'redPriest', f: 'sword2', g: 'redGem', h: 'redGem', s: 'blueGem', i: 'blueGem' },
-  }),
-  std(11, '第 11 层', {
-    door: 'B',
-    key: 'b',
-    hasDown: true,
-    start: false,
-    content: { a: 'knight', m: 'vampire', d: 'knight', e: 'goblinKing', f: 'sword2', g: 'yellowPotion', h: 'blueGem', s: 20, i: 'blueGem' },
-  }),
+const DOORS = ['Y', 'B', 'R'] as const
+const KEYS = ['y', 'b', 'r'] as const
+
+/** 按楼层挑 3 只怪（随层数升级） */
+function monstersFor(n: number): [string, string, string] {
+  if (n <= 2) return ['greenSlime', 'redSlime', 'blackSlime']
+  if (n <= 4) return ['bat', 'bigBat', 'skeleton']
+  if (n <= 6) return ['redBat', 'skeleton', 'skeletonCaptain']
+  if (n <= 8) return ['zombie', 'redBat', 'skeletonCaptain']
+  if (n <= 10) return ['slimeMan', 'zombie', 'bluePriest']
+  if (n <= 12) return ['zombieKing', 'bluePriest', 'redBat']
+  if (n <= 14) return ['redPriest', 'goblin', 'slimeMan']
+  if (n <= 16) return ['goblin', 'goblinKing', 'redPriest']
+  if (n <= 18) return ['vampire', 'goblin', 'goblinKing']
+  if (n <= 20) return ['knight', 'vampire', 'goblinKing']
+  return ['knight', 'vampire', 'knight']
+}
+
+function potionFor(n: number): string {
+  if (n <= 6) return 'redPotion'
+  if (n <= 12) return 'bluePotion'
+  if (n <= 18) return 'yellowPotion'
+  return 'greenPotion'
+}
+
+/** 部分楼层固定掉落剑/盾 */
+function gearFor(n: number): string | null {
+  const map: Record<number, string> = {
+    3: 'sword1',
+    4: 'shield1',
+    7: 'sword2',
+    8: 'shield2',
+    11: 'sword2',
+    12: 'shield2',
+    15: 'sword2',
+    16: 'shield2',
+    19: 'sword2',
+    20: 'shield2',
+    22: 'sword2',
+    23: 'shield2',
+  }
+  return map[n] ?? null
+}
+
+function genFloor(n: number): FloorData {
+  const [a, m, d] = monstersFor(n)
+  const content: SlotMap = {
+    a,
+    m,
+    d,
+    e: 'redGem',
+    f: 'redGem',
+    g: 'blueGem',
+    h: potionFor(n),
+    i: gearFor(n) ?? 'blueGem',
+    s: n % 3 === 0 ? 20 : 'redGem', // 每 3 层一个商店
+  }
+  return std(n, `第 ${n} 层`, {
+    door: DOORS[(n - 1) % 3],
+    key: KEYS[(n - 1) % 3],
+    hasDown: n > 1,
+    start: n === 1,
+    content,
+  })
+}
+
+const floors: FloorData[] = []
+for (let n = 1; n <= 23; n++) floors.push(genFloor(n))
+
+// 顶层：魔王殿
+floors.push(
   buildFloor(
-    12,
+    24,
     '魔王殿',
     [
       '#############',
@@ -140,9 +128,9 @@ const floors: FloorData[] = [
       '#...........#',
       '#############',
     ],
-    { M: 'demonKing', k: 'knight', l: 'knight', w: 'greenPotion', h: 'yellowPotion', x: 'greenPotion', z: 'cross' },
+    { M: 'demonKing', k: 'knight', l: 'vampire', w: 'greenPotion', h: 'greenPotion', x: 'greenPotion', z: 'cross' },
   ),
-]
+)
 
 export const FLOORS: FloorData[] = floors
 
