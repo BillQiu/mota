@@ -14,6 +14,7 @@ const KEY_BG: Record<KeyColor, string> = {
   yellow: '#f1c40f',
   blue: '#3498db',
   red: '#e74c3c',
+  green: '#2ecc71',
 }
 
 function KeyChip({ color, n }: { color: KeyColor; n: number }) {
@@ -42,6 +43,7 @@ export function Hud() {
         <KeyChip color="yellow" n={h.keys.yellow} />
         <KeyChip color="blue" n={h.keys.blue} />
         <KeyChip color="red" n={h.keys.red} />
+        <KeyChip color="green" n={h.keys.green} />
       </div>
     </div>
   )

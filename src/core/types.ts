@@ -4,7 +4,7 @@
 
 export type Direction = 'up' | 'down' | 'left' | 'right'
 
-export type KeyColor = 'yellow' | 'blue' | 'red'
+export type KeyColor = 'yellow' | 'blue' | 'red' | 'green'
 
 /** 地块类别 —— 决定该格的交互逻辑 */
 export type BlockCategory =
@@ -82,6 +82,8 @@ export interface ItemDef {
   id: string
   name: string
   cls: ItemClass
+  /** 是否按当前楼层缩放效果（经典版宝石/血瓶：效果 × 楼层数） */
+  scaling?: boolean
   /** 拾取时对勇士的即时效果 */
   effect?: Partial<{
     hp: number
@@ -172,6 +174,8 @@ export interface ShopOption {
   label: string
   cost: number
   effect: Partial<{ hp: number; atk: number; def: number; mdef: number }>
+  /** 购买钥匙类选项 */
+  key?: KeyColor
 }
 
 /** 引擎动作返回值 */

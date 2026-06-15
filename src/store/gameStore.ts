@@ -47,7 +47,7 @@ interface GameStore {
   toTitle: () => void
 }
 
-const COLOR_CN: Record<KeyColor, string> = { yellow: '黄', blue: '蓝', red: '红' }
+const COLOR_CN: Record<KeyColor, string> = { yellow: '黄', blue: '蓝', red: '红', green: '绿' }
 
 let logId = 0
 const MAX_LOGS = 60

@@ -5,19 +5,19 @@ import { FLOORS } from '../data/floors'
 import { getBlock } from '../core/blocks'
 
 describe('initGame', () => {
-  it('加载所有楼层且尺寸为 13×13', () => {
+  it('加载所有楼层且尺寸为 11×11', () => {
     const s = initGame(FLOORS)
     expect(Object.keys(s.maps).length).toBe(FLOORS.length)
     for (const f of FLOORS) {
-      expect(s.maps[f.floor].width).toBe(13)
-      expect(s.maps[f.floor].height).toBe(13)
+      expect(s.maps[f.floor].width).toBe(11)
+      expect(s.maps[f.floor].height).toBe(11)
     }
   })
 
   it('勇士在第 1 层起点，初始属性正确', () => {
     const s = initGame(FLOORS)
     expect(s.hero.floor).toBe(1)
-    expect(s.hero.hp).toBe(1000)
+    expect(s.hero.hp).toBe(400)
     expect(s.hero.atk).toBe(10)
     expect(s.hero.def).toBe(10)
     expect(s.status).toBe('playing')
@@ -58,7 +58,7 @@ describe('tryMove 交互', () => {
   it('没钥匙撞门 => needKey 且不移动', () => {
     let s = initGame(FLOORS)
     const door = find(s, 1, 'door')
-    s = { ...s, hero: { ...s.hero, x: door.x, y: door.y + 1, keys: { yellow: 0, blue: 0, red: 0 } } }
+    s = { ...s, hero: { ...s.hero, x: door.x, y: door.y + 1, keys: { yellow: 0, blue: 0, red: 0, green: 0 } } }
     const { state, events } = tryMove(s, 'up')
     expect(events.some((e) => e.type === 'needKey')).toBe(true)
     expect(state.hero.y).toBe(door.y + 1)
@@ -67,7 +67,7 @@ describe('tryMove 交互', () => {
   it('有钥匙撞门 => 消耗钥匙、开门、走上去', () => {
     let s = initGame(FLOORS)
     const door = find(s, 1, 'door')
-    s = { ...s, hero: { ...s.hero, x: door.x, y: door.y + 1, keys: { yellow: 1, blue: 0, red: 0 } } }
+    s = { ...s, hero: { ...s.hero, x: door.x, y: door.y + 1, keys: { yellow: 1, blue: 0, red: 0, green: 0 } } }
     const { state, events } = tryMove(s, 'up')
     expect(events.some((e) => e.type === 'openDoor')).toBe(true)
     expect(state.hero.keys.yellow).toBe(0)
@@ -92,6 +92,24 @@ describe('tryMove 交互', () => {
     const { state, events } = tryMove(s, 'up')
     expect(events.some((e) => e.type === 'cannotWin')).toBe(true)
     expect(state.hero.y).toBe(mon.y + 1)
+  })
+
+  it('缩放道具：红宝石加攻 = 当前楼层数', () => {
+    const gemPickup = (floor: number) => {
+      const s = initGame(FLOORS)
+      s.hero.floor = floor
+      s.hero.x = 5
+      s.hero.y = 6
+      const m = s.maps[floor]
+      m.tiles[6][5] = 0 // 勇士脚下地面
+      m.tiles[5][5] = 201 // 上方红宝石
+      const before = s.hero.atk
+      const { state } = tryMove(s, 'up')
+      return state.hero.atk - before
+    }
+    expect(gemPickup(1)).toBe(1)
+    expect(gemPickup(5)).toBe(5)
+    expect(gemPickup(9)).toBe(9)
   })
 
   it('致命可撞 => 撞了就 gameover', () => {

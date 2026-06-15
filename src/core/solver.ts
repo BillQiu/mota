@@ -18,9 +18,9 @@ const PRIO = {
   win: 100,
   item: 50,
   monster: 40,
-  door: 30,
   shop: 20,
   stairUp: 10,
+  door: 5, // 最低：先穷尽免费进展，只在无路时才花钥匙开门（节约钥匙）
 }
 
 const MIN_SHOP_COST = Math.min(...GOLD_SHOP.map((o) => o.cost))
@@ -101,18 +101,23 @@ export function autoSolve(initial: GameState, maxIter = 10000): SolveResult {
       if (after.x === before.x && after.y === before.y) break // 交互完成（撞门/撞怪/到商店未移动）
     }
 
-    // 到达商店：把金币花在 攻/防/血 上（轮转，代表聪明玩家）
+    // 到达商店：先囤钥匙（破解钥匙死锁），再把余钱买攻/防/血
     if (target.kind === 'shop') {
-      const rotation = ['atk', 'def', 'hp']
-      let i = 0
-      while (state.hero.gold >= MIN_SHOP_COST) {
-        const want = rotation[i % rotation.length]
-        const opt = GOLD_SHOP.find((o) => o.id === want && state.hero.gold >= o.cost)
-        const fallback = GOLD_SHOP.find((o) => state.hero.gold >= o.cost)
-        const chosen = opt ?? fallback
-        if (!chosen) break
-        state = buyFromShop(state, chosen).state
-        i++
+      const buy = (id: string) => {
+        const o = GOLD_SHOP.find((x) => x.id === id && state.hero.gold >= x.cost)
+        if (!o) return false
+        state = buyFromShop(state, o).state
+        return true
+      }
+      for (let k = 0; k < 4; k++) buy('keyY')
+      buy('keyB')
+      buy('keyR')
+      const rot = ['atk', 'def', 'hp']
+      let r = 0
+      let guard = 0
+      while (state.hero.gold >= MIN_SHOP_COST && guard++ < 300) {
+        if (!buy(rot[r % rot.length])) break
+        r++
       }
     }
   }

@@ -32,14 +32,14 @@ export function createHero(): Hero {
     y: 0,
     floor: 1,
     direction: 'down',
-    hp: 1000,
+    hp: 400,
     atk: 10,
     def: 10,
     mdef: 0,
     gold: 0,
     exp: 0,
     level: 1,
-    keys: { yellow: 0, blue: 0, red: 0 },
+    keys: { yellow: 0, blue: 0, red: 0, green: 0 },
   }
 }
 
@@ -92,23 +92,44 @@ export function initGame(floors: FloorData[]): GameState {
   }
 }
 
-/** 应用道具效果到勇士（返回新 hero） */
+/** 应用道具效果到勇士（返回新 hero）。scaling 道具的 生命/攻/防 效果 × 当前楼层。 */
 function applyItemEffect(hero: Hero, itemId: string): { hero: Hero; text: string } {
   const def = ITEMS[itemId]
   const h: Hero = { ...hero, keys: { ...hero.keys } }
-  if (def?.effect) {
-    const e = def.effect
-    if (e.hp) h.hp += e.hp
-    if (e.atk) h.atk += e.atk
-    if (e.def) h.def += e.def
-    if (e.mdef) h.mdef += e.mdef
-    if (e.gold) h.gold += e.gold
-    if (e.exp) h.exp += e.exp
-    if (e.keyYellow) h.keys.yellow += e.keyYellow
-    if (e.keyBlue) h.keys.blue += e.keyBlue
-    if (e.keyRed) h.keys.red += e.keyRed
+  if (!def?.effect) return { hero: h, text: def ? `获得 ${def.name}` : '获得道具' }
+  const e = def.effect
+  const mult = def.scaling ? hero.floor : 1
+  const parts: string[] = []
+  if (e.hp) {
+    const v = e.hp * mult
+    h.hp += v
+    parts.push(`生命+${v}`)
   }
-  return { hero: h, text: def ? `获得 ${def.name}${def.text ? `（${def.text}）` : ''}` : '获得道具' }
+  if (e.atk) {
+    const v = e.atk * mult
+    h.atk += v
+    parts.push(`攻击+${v}`)
+  }
+  if (e.def) {
+    const v = e.def * mult
+    h.def += v
+    parts.push(`防御+${v}`)
+  }
+  if (e.mdef) {
+    const v = e.mdef * mult
+    h.mdef += v
+    parts.push(`魔防+${v}`)
+  }
+  if (e.gold) {
+    h.gold += e.gold
+    parts.push(`金币+${e.gold}`)
+  }
+  if (e.exp) h.exp += e.exp
+  if (e.keyYellow) h.keys.yellow += e.keyYellow
+  if (e.keyBlue) h.keys.blue += e.keyBlue
+  if (e.keyRed) h.keys.red += e.keyRed
+  const detail = parts.length ? `（${parts.join(' ')}）` : ''
+  return { hero: h, text: `获得 ${def.name}${detail}` }
 }
 
 /** 处理楼层切换（踏上楼梯） */
@@ -331,6 +352,7 @@ export function buyFromShop(state: GameState, option: ShopOption): ActionResult 
   if (e.atk) h.atk += e.atk
   if (e.def) h.def += e.def
   if (e.mdef) h.mdef += e.mdef
+  if (option.key) h.keys[option.key] += 1
   return {
     state: { ...state, hero: h },
     events: [{ type: 'message', text: `购买 ${option.label}（-${option.cost} 金币）` }],
