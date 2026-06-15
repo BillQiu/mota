@@ -5,6 +5,7 @@ import { findPath } from '../core/pathfind'
 import { FLOORS } from '../data/floors'
 import { GOLD_SHOP } from '../data/shops'
 import { AUTO_SLOT, autoSave, loadGame, saveGame } from '../core/save'
+import { sfx, type SoundName } from '../audio/sfx'
 
 export interface LogEntry {
   id: number
@@ -27,6 +28,7 @@ interface GameStore {
   dialog: DialogState | null
   shop: ShopOption[] | null // 当前打开的商店
   panel: Panel // 当前打开的面板（怪物手册/存读档）
+  muted: boolean // 是否静音
   moving: boolean // 正在自动寻路
 
   newGame: () => void
@@ -37,6 +39,7 @@ interface GameStore {
   closeShop: () => void
   openPanel: (p: Panel) => void
   closePanel: () => void
+  toggleMute: () => void
   save: (slot: string) => void
   load: (slot: string) => boolean
   hasAutoSave: () => boolean
@@ -93,6 +96,18 @@ export const useGameStore = create<GameStore>((set, get) => {
     set((s) => ({ logs: [...s.logs, ...entries].slice(-MAX_LOGS) }))
   }
 
+  const SFX_OF: Partial<Record<GameEvent['type'], SoundName>> = {
+    battle: 'battle',
+    getItem: 'item',
+    getKey: 'key',
+    openDoor: 'door',
+    changeFloor: 'stairs',
+    needKey: 'denied',
+    cannotWin: 'denied',
+    victory: 'victory',
+    gameover: 'gameover',
+  }
+
   const applyEvents = (events: GameEvent[]) => {
     pushLogs(events)
     const dialog = events.find((e) => e.type === 'dialog')
@@ -101,6 +116,14 @@ export const useGameStore = create<GameStore>((set, get) => {
     }
     if (events.some((e) => e.type === 'shop')) {
       set({ shop: GOLD_SHOP })
+    }
+    // 播放音效（每批只播一个最显著的，避免叠音）
+    for (const e of events) {
+      const s = SFX_OF[e.type]
+      if (s) {
+        sfx.play(s)
+        break
+      }
     }
   }
 
@@ -111,10 +134,12 @@ export const useGameStore = create<GameStore>((set, get) => {
     dialog: null,
     shop: null,
     panel: 'none',
+    muted: sfx.isMuted(),
     moving: false,
 
     newGame: () => {
       logId = 0
+      sfx.resume()
       const game = initGame(FLOORS)
       set({ game, screen: 'playing', logs: [], dialog: null, shop: null, panel: 'none', moving: false })
       autoSave(game, Date.now())
@@ -175,6 +200,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       const option = shop.find((o) => o.id === optionId)
       if (!option) return
       const { state, events } = buyFromShop(g, option)
+      if (state !== g) sfx.play('buy')
       set({ game: state })
       pushLogs(events)
       autoSave(state, Date.now())
@@ -184,6 +210,12 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     openPanel: (p) => set({ panel: p }),
     closePanel: () => set({ panel: 'none' }),
+
+    toggleMute: () => {
+      const m = !get().muted
+      sfx.setMuted(m)
+      set({ muted: m })
+    },
 
     save: (slot) => {
       const g = get().game

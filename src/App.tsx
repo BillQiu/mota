@@ -32,6 +32,8 @@ export default function App() {
   const move = useGameStore((s) => s.move)
   const toTitle = useGameStore((s) => s.toTitle)
   const openPanel = useGameStore((s) => s.openPanel)
+  const muted = useGameStore((s) => s.muted)
+  const toggleMute = useGameStore((s) => s.toggleMute)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -75,6 +77,9 @@ export default function App() {
             </button>
             <button className="btn small" onClick={() => openPanel('saves')}>
               存读档
+            </button>
+            <button className="btn small" onClick={toggleMute} title="音效开关">
+              {muted ? '🔇' : '🔊'}
             </button>
             <button className="btn small" onClick={toTitle}>
               标题
