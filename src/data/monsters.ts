@@ -6,7 +6,7 @@ import { IMPORTED_MONSTERS } from './imported'
 // ============================================================
 
 const BOSS: Record<string, MonsterDef> = {
-  demonKing: { id: 'demonKing', name: '魔王', hp: 3000, atk: 180, def: 80, gold: 0, exp: 0, color: '#900c3f', glyph: '魔' },
+  demonKing: { id: 'demonKing', name: '魔王', hp: 20000, atk: 600, def: 300, gold: 0, exp: 0, color: '#900c3f', glyph: '魔' },
 }
 
 export const MONSTERS: Record<string, MonsterDef> = { ...IMPORTED_MONSTERS, ...BOSS }

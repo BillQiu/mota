@@ -34,6 +34,9 @@ export default function App() {
   const openPanel = useGameStore((s) => s.openPanel)
   const muted = useGameStore((s) => s.muted)
   const toggleMute = useGameStore((s) => s.toggleMute)
+  const autoPlaying = useGameStore((s) => s.autoPlaying)
+  const autoPlay = useGameStore((s) => s.autoPlay)
+  const stopAuto = useGameStore((s) => s.stopAuto)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -77,6 +80,9 @@ export default function App() {
             </button>
             <button className="btn small" onClick={() => openPanel('saves')}>
               存读档
+            </button>
+            <button className={`btn small ${autoPlaying ? 'auto-on' : ''}`} onClick={autoPlaying ? stopAuto : autoPlay}>
+              {autoPlaying ? '停止' : '自动'}
             </button>
             <button className="btn small" onClick={toggleMute} title="音效开关">
               {muted ? '🔇' : '🔊'}

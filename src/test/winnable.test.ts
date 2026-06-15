@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { initGame } from '../core/game'
+import { autoSolve } from '../core/solver'
 import { isPassable, getBlock } from '../core/blocks'
 import { FLOORS } from '../data/floors'
 import type { FloorMap } from '../core/types'
@@ -88,5 +89,15 @@ describe('导入塔结构完整性', () => {
       }
     expect(hasPrincess).toBe(true)
     expect(hasDemon).toBe(true)
+  })
+
+  it('全 24 层可通关（跨层求解器自动通关证明）', () => {
+    const r = autoSolve(initGame(FLOORS))
+    if (!r.won) {
+      const h = r.state.hero
+      console.error(`求解失败 stuck=${r.stuck} 第${h.floor}层 HP=${h.hp} ATK=${h.atk} DEF=${h.def}`)
+    }
+    expect(r.won).toBe(true)
+    expect(r.state.hero.floor).toBe(24)
   })
 })

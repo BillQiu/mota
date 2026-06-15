@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { Direction, GameEvent, GameState, KeyColor, ShopOption } from '../core/types'
 import { buyFromShop, initGame, tryMove } from '../core/game'
 import { findPath } from '../core/pathfind'
+import { solveStep } from '../core/solver'
 import { FLOORS } from '../data/floors'
 import { GOLD_SHOP } from '../data/shops'
 import { AUTO_SLOT, autoSave, loadGame, saveGame } from '../core/save'
@@ -30,6 +31,7 @@ interface GameStore {
   panel: Panel // 当前打开的面板（怪物手册/存读档）
   muted: boolean // 是否静音
   moving: boolean // 正在自动寻路
+  autoPlaying: boolean // 一键自动（求解器接管）
 
   newGame: () => void
   move: (dir: Direction) => void
@@ -40,6 +42,8 @@ interface GameStore {
   openPanel: (p: Panel) => void
   closePanel: () => void
   toggleMute: () => void
+  autoPlay: () => void
+  stopAuto: () => void
   save: (slot: string) => void
   load: (slot: string) => boolean
   hasAutoSave: () => boolean
@@ -136,18 +140,20 @@ export const useGameStore = create<GameStore>((set, get) => {
     panel: 'none',
     muted: sfx.isMuted(),
     moving: false,
+    autoPlaying: false,
 
     newGame: () => {
       logId = 0
       sfx.resume()
       const game = initGame(FLOORS)
-      set({ game, screen: 'playing', logs: [], dialog: null, shop: null, panel: 'none', moving: false })
+      set({ game, screen: 'playing', logs: [], dialog: null, shop: null, panel: 'none', moving: false, autoPlaying: false })
       autoSave(game, Date.now())
     },
 
     move: (dir) => {
       const g = get().game
-      if (!g || g.status !== 'playing' || get().dialog || get().shop || get().panel !== 'none') return
+      if (!g || g.status !== 'playing' || get().dialog || get().shop || get().panel !== 'none' || get().autoPlaying)
+        return
       const { state, events } = tryMove(g, dir)
       set({ game: state })
       applyEvents(events)
@@ -159,7 +165,15 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     moveTo: (x, y) => {
       const g = get().game
-      if (!g || g.status !== 'playing' || get().dialog || get().shop || get().panel !== 'none' || get().moving)
+      if (
+        !g ||
+        g.status !== 'playing' ||
+        get().dialog ||
+        get().shop ||
+        get().panel !== 'none' ||
+        get().moving ||
+        get().autoPlaying
+      )
         return
       const map = g.maps[g.hero.floor]
       const path = findPath(map, { x: g.hero.x, y: g.hero.y }, { x, y })
@@ -217,6 +231,39 @@ export const useGameStore = create<GameStore>((set, get) => {
       set({ muted: m })
     },
 
+    autoPlay: () => {
+      if (get().autoPlaying) return
+      const g = get().game
+      if (!g || g.status !== 'playing') return
+      set({ autoPlaying: true, shop: null, panel: 'none', dialog: null })
+      const tick = () => {
+        if (!get().autoPlaying) return
+        const cur = get().game
+        if (!cur || cur.status !== 'playing') {
+          set({ autoPlaying: false })
+          return
+        }
+        const next = solveStep(cur)
+        if (!next) {
+          // 求解器卡住（硬塔需人工规划），停止
+          set({ autoPlaying: false })
+          pushLogs([{ type: 'message', text: '自动模式：暂无可推进的步骤' }])
+          return
+        }
+        set({ game: next })
+        autoSave(next, Date.now())
+        if (next.status !== 'playing') {
+          set({ autoPlaying: false })
+          applyEvents([next.status === 'victory' ? { type: 'victory' } : { type: 'gameover', reason: '' }])
+          return
+        }
+        window.setTimeout(tick, 55)
+      }
+      tick()
+    },
+
+    stopAuto: () => set({ autoPlaying: false }),
+
     save: (slot) => {
       const g = get().game
       if (!g) return
@@ -228,7 +275,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       const state = loadGame(slot)
       if (!state) return false
       logId = 0
-      set({ game: state, screen: 'playing', logs: [], dialog: null, shop: null, panel: 'none', moving: false })
+      set({ game: state, screen: 'playing', logs: [], dialog: null, shop: null, panel: 'none', moving: false, autoPlaying: false })
       return true
     },
 
@@ -238,7 +285,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       get().load(AUTO_SLOT)
     },
 
-    toTitle: () => set({ screen: 'title', dialog: null, shop: null, panel: 'none', moving: false }),
+    toTitle: () => set({ screen: 'title', dialog: null, shop: null, panel: 'none', moving: false, autoPlaying: false }),
   }
 })
 

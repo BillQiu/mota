@@ -67,6 +67,10 @@
   padding: 8px 18px;
   font-size: 14px;
 }
+.btn.small.auto-on {
+  background: linear-gradient(#2e8b57, #1f6b41);
+  border-color: #2ecc71;
+}
 
 /* ---------- 游戏布局 ---------- */
 .game-layout {
