@@ -1,0 +1,261 @@
+.app {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 30%, #1c1c2c 0%, #0b0b12 70%);
+}
+
+/* ---------- 标题页 ---------- */
+.title {
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+.title-tower {
+  font-size: 72px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+}
+.title-name {
+  font-size: 64px;
+  letter-spacing: 12px;
+  color: var(--mota-gold);
+  text-shadow: 0 3px 0 #8a6d00, 0 6px 14px rgba(0, 0, 0, 0.6);
+  margin: 8px 0;
+}
+.title-sub {
+  color: #b8b8d0;
+  font-size: 16px;
+  letter-spacing: 4px;
+  margin-bottom: 36px;
+}
+.title-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+.title-foot {
+  margin-top: 40px;
+  color: #6a6a85;
+  font-size: 12px;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  background: linear-gradient(#3a3a52, #2a2a3c);
+  color: #fff;
+  border: 2px solid var(--mota-border);
+  border-radius: 8px;
+  padding: 12px 48px;
+  font-size: 18px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.08s, background 0.15s, box-shadow 0.15s;
+}
+.btn:hover:not(:disabled) {
+  background: linear-gradient(#46466a, #34344c);
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.25);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn.small {
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+/* ---------- 游戏布局 ---------- */
+.game-layout {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 16px;
+}
+.game-right {
+  width: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- HUD ---------- */
+.hud {
+  background: var(--mota-panel);
+  border: 2px solid var(--mota-border);
+  border-radius: 8px;
+  padding: 12px;
+}
+.hud-floor {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--mota-gold);
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 2px;
+  border-bottom: 1px dashed #44445a;
+}
+.stat-label {
+  color: #9a9ab5;
+  font-size: 14px;
+}
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+.stat-value.hp {
+  color: var(--mota-hp);
+}
+.stat-value.atk {
+  color: var(--mota-atk);
+}
+.stat-value.def {
+  color: var(--mota-def);
+}
+.stat-value.gold {
+  color: var(--mota-gold);
+}
+.stat-value.exp {
+  color: var(--mota-exp);
+}
+.hud-keys {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.keychip {
+  width: 44px;
+  height: 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: #1a1a1a;
+  font-weight: bold;
+  font-size: 13px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+}
+.keychip-n {
+  font-size: 15px;
+}
+
+/* ---------- 消息栏 ---------- */
+.log {
+  background: #15151f;
+  border: 2px solid var(--mota-border);
+  border-radius: 8px;
+  padding: 10px;
+  height: 220px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.log-empty {
+  color: #6a6a85;
+}
+.log-line.good {
+  color: #8ef0a0;
+}
+.log-line.bad {
+  color: #ff8a8a;
+}
+.log-line.normal {
+  color: #c8c8dc;
+}
+
+/* ---------- 工具栏 ---------- */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ---------- 对话框 ---------- */
+.dialog-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 60px;
+}
+.dialog-box {
+  width: 520px;
+  max-width: 90vw;
+  background: var(--mota-panel);
+  border: 3px solid var(--mota-gold);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+.dialog-speaker {
+  color: var(--mota-gold);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.dialog-text {
+  font-size: 16px;
+  line-height: 1.7;
+  min-height: 48px;
+}
+.dialog-hint {
+  text-align: right;
+  color: #9a9ab5;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* ---------- 结局浮层 ---------- */
+.result-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+.result-box {
+  background: var(--mota-panel);
+  border: 3px solid var(--mota-border);
+  border-radius: 12px;
+  padding: 32px 48px;
+  text-align: center;
+}
+.result-win {
+  color: var(--mota-gold);
+  font-size: 32px;
+}
+.result-lose {
+  color: var(--mota-hp);
+  font-size: 32px;
+}
+.result-info {
+  color: #b8b8d0;
+  margin: 16px 0 24px;
+}
+.result-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

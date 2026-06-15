@@ -1,0 +1,41 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --mota-bg: #000;
+  --mota-panel: #2a2a3a;
+  --mota-panel-light: #3a3a4f;
+  --mota-border: #5a5a7a;
+  --mota-text: #ffffff;
+  --mota-gold: #ffd700;
+  --mota-hp: #ff5a5a;
+  --mota-atk: #ff9a3a;
+  --mota-def: #5ab0ff;
+  --mota-exp: #9aff5a;
+  --tile: 32px;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--mota-bg);
+  color: var(--mota-text);
+  font-family: 'Courier New', '微软雅黑', 'Microsoft YaHei', monospace;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  user-select: none;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
