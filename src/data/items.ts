@@ -8,12 +8,12 @@ import type { ItemDef } from '../core/types'
 
 export const ITEMS: Record<string, ItemDef> = {
   // —— 缩放宝石（base=1，实际 +楼层）——
-  redGem: { id: 'redGem', name: '红宝石', cls: 'permanent', scaling: true, effect: { atk: 1 }, text: '攻击 +楼层', color: '#e74c3c', glyph: '攻' },
-  blueGem: { id: 'blueGem', name: '蓝宝石', cls: 'permanent', scaling: true, effect: { def: 1 }, text: '防御 +楼层', color: '#3498db', glyph: '防' },
+  redGem: { id: 'redGem', name: '红宝石', cls: 'permanent', scaling: true, effect: { atk: 1 }, text: '攻击 +楼层', sprite: { sheet: 'Item01-Gem01.png', sx: 0, sy: 0 }, color: '#e74c3c', glyph: '攻' },
+  blueGem: { id: 'blueGem', name: '蓝宝石', cls: 'permanent', scaling: true, effect: { def: 1 }, text: '防御 +楼层', sprite: { sheet: 'Item01-Gem01.png', sx: 32, sy: 0 }, color: '#3498db', glyph: '防' },
 
   // —— 缩放血瓶（base 50 / 200，实际 ×楼层）——
-  redPotion: { id: 'redPotion', name: '红血瓶', cls: 'consumable', scaling: true, effect: { hp: 50 }, text: '生命 +50×楼层', color: '#ff5a5a', glyph: '血' },
-  bluePotion: { id: 'bluePotion', name: '蓝血瓶', cls: 'consumable', scaling: true, effect: { hp: 200 }, text: '生命 +200×楼层', color: '#5a9aff', glyph: '血' },
+  redPotion: { id: 'redPotion', name: '红血瓶', cls: 'consumable', scaling: true, effect: { hp: 50 }, text: '生命 +50×楼层', sprite: { sheet: 'Item01-02.png', sx: 0, sy: 0 }, color: '#ff5a5a', glyph: '血' },
+  bluePotion: { id: 'bluePotion', name: '蓝血瓶', cls: 'consumable', scaling: true, effect: { hp: 200 }, text: '生命 +200×楼层', sprite: { sheet: 'Item01-02.png', sx: 32, sy: 0 }, color: '#5a9aff', glyph: '血' },
 
   // —— 工具类（保留，供后续）——
   fly: { id: 'fly', name: '飞行器', cls: 'tool', text: '可飞往已到过的楼层', color: '#9b59b6', glyph: '飞' },

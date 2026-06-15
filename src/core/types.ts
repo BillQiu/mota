@@ -6,6 +6,13 @@ export type Direction = 'up' | 'down' | 'left' | 'right'
 
 export type KeyColor = 'yellow' | 'blue' | 'red' | 'green'
 
+/** 精灵切图：从某张 sheet 的 (sx,sy) 取 32×32 */
+export interface Sprite {
+  sheet: string
+  sx: number
+  sy: number
+}
+
 /** 地块类别 —— 决定该格的交互逻辑 */
 export type BlockCategory =
   | 'floor' // 地面（可走）
@@ -32,6 +39,8 @@ export interface BlockDef {
   keyColor?: KeyColor
   monsterId?: string
   itemId?: string
+  /** 精灵图 */
+  sprite?: Sprite
   /** 无素材时的占位渲染色 */
   color?: string
   /** 占位渲染时格子中央显示的字符（如 怪→怪名首字、门→「门」） */
@@ -66,6 +75,7 @@ export interface MonsterDef {
   gold: number // 击杀获得金币
   exp: number // 击杀获得经验
   special?: number[] // 特殊属性 id（先攻/连击/魔攻… 后期机制）
+  sprite?: Sprite // 精灵图
   color?: string // 占位渲染色
   glyph?: string // 占位字符
 }
@@ -97,6 +107,7 @@ export interface ItemDef {
     keyRed: number
   }>
   text?: string // 拾取/使用提示文案
+  sprite?: Sprite // 精灵图
   color?: string
   glyph?: string
 }

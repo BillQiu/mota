@@ -7,6 +7,7 @@ const { MAP, ITEM, MAP_ENTER } = config
 const PALETTE = ['#3fb24f', '#c0392b', '#2c2c34', '#7d5ba6', '#5b3b86', '#a93226', '#e8e8d8', '#cfc9a8', '#6b8e23', '#556b2f', '#16a085', '#2980b9', '#8e6f3a', '#6e5226', '#7b241c', '#34495e', '#900c3f', '#b9770e']
 const monsters = {} // key(原 mon_xxx) -> def
 const monsterBlock = {} // blockId -> key
+const sheets = new Set()
 let mBlockId = 101
 let pi = 0
 for (const [key, def] of Object.entries(ITEM)) {
@@ -14,6 +15,9 @@ for (const [key, def] of Object.entries(ITEM)) {
   const o = def.option
   if (!o || !o.name || o.name === '勇者') continue
   const id = key // 保留原 key 作为 id
+  const imgFile = config.IMAGES[o.image] // 'img/Monster01-01.png'
+  const sheet = imgFile ? imgFile.split('/').pop() : null
+  if (sheet) sheets.add(sheet)
   monsters[id] = {
     id,
     name: o.name,
@@ -24,11 +28,13 @@ for (const [key, def] of Object.entries(ITEM)) {
     exp: o.coin, // 原数据无经验，用金币近似
     color: PALETTE[pi % PALETTE.length],
     glyph: o.name[0],
+    sprite: sheet ? { sheet, sx: (o.imgX || 0) * 32, sy: (o.imgY || 0) * 32 } : undefined,
   }
   monsterBlock[mBlockId] = id
   mBlockId++
   pi++
 }
+console.log('需要的怪物 sheet:', [...sheets].join(' '))
 const monsterKeyToBlock = Object.fromEntries(Object.entries(monsterBlock).map(([b, k]) => [k, Number(b)]))
 
 // ---- 2. 瓦片字符串 -> 我的 block id ----

@@ -12,7 +12,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 1,
     "exp": 1,
     "color": "#3fb24f",
-    "glyph": "绿"
+    "glyph": "绿",
+    "sprite": {
+      "sheet": "Monster01-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   },
   "mon_red_slime": {
     "id": "mon_red_slime",
@@ -23,7 +28,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 2,
     "exp": 2,
     "color": "#c0392b",
-    "glyph": "红"
+    "glyph": "红",
+    "sprite": {
+      "sheet": "Monster01-01.png",
+      "sx": 0,
+      "sy": 32
+    }
   },
   "mon_big_slime": {
     "id": "mon_big_slime",
@@ -34,7 +44,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 8,
     "exp": 8,
     "color": "#2c2c34",
-    "glyph": "大"
+    "glyph": "大",
+    "sprite": {
+      "sheet": "Monster01-01.png",
+      "sx": 0,
+      "sy": 64
+    }
   },
   "mon_slime_lord": {
     "id": "mon_slime_lord",
@@ -45,7 +60,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 40,
     "exp": 40,
     "color": "#7d5ba6",
-    "glyph": "史"
+    "glyph": "史",
+    "sprite": {
+      "sheet": "Monster01-01.png",
+      "sx": 0,
+      "sy": 96
+    }
   },
   "mon_skeleton": {
     "id": "mon_skeleton",
@@ -56,7 +76,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 6,
     "exp": 6,
     "color": "#5b3b86",
-    "glyph": "骷"
+    "glyph": "骷",
+    "sprite": {
+      "sheet": "Monster02-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   },
   "mon_skeleton_soldier": {
     "id": "mon_skeleton_soldier",
@@ -67,7 +92,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 8,
     "exp": 8,
     "color": "#a93226",
-    "glyph": "骷"
+    "glyph": "骷",
+    "sprite": {
+      "sheet": "Monster02-01.png",
+      "sx": 0,
+      "sy": 32
+    }
   },
   "mon_skeleton_captain": {
     "id": "mon_skeleton_captain",
@@ -78,7 +108,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 30,
     "exp": 30,
     "color": "#e8e8d8",
-    "glyph": "骷"
+    "glyph": "骷",
+    "sprite": {
+      "sheet": "Monster02-01.png",
+      "sx": 0,
+      "sy": 64
+    }
   },
   "mon_bat": {
     "id": "mon_bat",
@@ -89,7 +124,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 3,
     "exp": 3,
     "color": "#cfc9a8",
-    "glyph": "小"
+    "glyph": "小",
+    "sprite": {
+      "sheet": "Monster03-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   },
   "mon_big_bat": {
     "id": "mon_big_bat",
@@ -100,7 +140,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 12,
     "exp": 12,
     "color": "#6b8e23",
-    "glyph": "大"
+    "glyph": "大",
+    "sprite": {
+      "sheet": "Monster03-01.png",
+      "sx": 0,
+      "sy": 32
+    }
   },
   "mon_red_bat": {
     "id": "mon_red_bat",
@@ -111,7 +156,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 50,
     "exp": 50,
     "color": "#556b2f",
-    "glyph": "吸"
+    "glyph": "吸",
+    "sprite": {
+      "sheet": "Monster03-01.png",
+      "sx": 0,
+      "sy": 64
+    }
   },
   "mon_guard": {
     "id": "mon_guard",
@@ -122,7 +172,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 12,
     "exp": 12,
     "color": "#16a085",
-    "glyph": "初"
+    "glyph": "初",
+    "sprite": {
+      "sheet": "Monster05-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   },
   "mon_big_guard": {
     "id": "mon_big_guard",
@@ -133,7 +188,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 50,
     "exp": 50,
     "color": "#2980b9",
-    "glyph": "中"
+    "glyph": "中",
+    "sprite": {
+      "sheet": "Monster05-01.png",
+      "sx": 0,
+      "sy": 32
+    }
   },
   "mon_super_guard": {
     "id": "mon_super_guard",
@@ -144,7 +204,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 200,
     "exp": 200,
     "color": "#8e6f3a",
-    "glyph": "高"
+    "glyph": "高",
+    "sprite": {
+      "sheet": "Monster05-01.png",
+      "sx": 0,
+      "sy": 64
+    }
   },
   "mon_priest": {
     "id": "mon_priest",
@@ -155,7 +220,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 5,
     "exp": 5,
     "color": "#6e5226",
-    "glyph": "初"
+    "glyph": "初",
+    "sprite": {
+      "sheet": "Monster06-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   },
   "mon_super_priest": {
     "id": "mon_super_priest",
@@ -166,7 +236,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 18,
     "exp": 18,
     "color": "#7b241c",
-    "glyph": "高"
+    "glyph": "高",
+    "sprite": {
+      "sheet": "Monster06-01.png",
+      "sx": 0,
+      "sy": 32
+    }
   },
   "mon_magician": {
     "id": "mon_magician",
@@ -177,7 +252,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 80,
     "exp": 80,
     "color": "#34495e",
-    "glyph": "初"
+    "glyph": "初",
+    "sprite": {
+      "sheet": "Monster06-01.png",
+      "sx": 0,
+      "sy": 64
+    }
   },
   "mon_super_magician": {
     "id": "mon_super_magician",
@@ -188,7 +268,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 90,
     "exp": 90,
     "color": "#900c3f",
-    "glyph": "高"
+    "glyph": "高",
+    "sprite": {
+      "sheet": "Monster06-01.png",
+      "sx": 0,
+      "sy": 96
+    }
   },
   "mon_zombie": {
     "id": "mon_zombie",
@@ -199,7 +284,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 22,
     "exp": 22,
     "color": "#b9770e",
-    "glyph": "兽"
+    "glyph": "兽",
+    "sprite": {
+      "sheet": "Monster09-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   },
   "mon_zombie_knight": {
     "id": "mon_zombie_knight",
@@ -210,7 +300,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 30,
     "exp": 30,
     "color": "#3fb24f",
-    "glyph": "兽"
+    "glyph": "兽",
+    "sprite": {
+      "sheet": "Monster09-01.png",
+      "sx": 0,
+      "sy": 32
+    }
   },
   "mon_rocker": {
     "id": "mon_rocker",
@@ -221,7 +316,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 28,
     "exp": 28,
     "color": "#c0392b",
-    "glyph": "石"
+    "glyph": "石",
+    "sprite": {
+      "sheet": "Monster10-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   },
   "mon_slime_man": {
     "id": "mon_slime_man",
@@ -232,7 +332,12 @@ export const IMPORTED_MONSTERS: Record<string, MonsterDef> = {
     "gold": 30,
     "exp": 30,
     "color": "#2c2c34",
-    "glyph": "兽"
+    "glyph": "兽",
+    "sprite": {
+      "sheet": "Monster11-01.png",
+      "sx": 0,
+      "sy": 0
+    }
   }
 }
 
